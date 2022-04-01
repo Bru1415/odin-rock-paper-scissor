@@ -26,7 +26,6 @@
         else if(randomNumber === 3){
             computerSelection = 'scissor';
         }
-        // console.log(computersDecison);
         
         return computerSelection;
 
@@ -51,7 +50,7 @@
 
         if(playerSelection.toLowerCase() === computerSelection.toLowerCase())
         {
-            return 'draw'
+            return 'Draw'
         }
         else{
 
@@ -59,23 +58,23 @@
             {
                 case 'rock':
                     if(computerSelection.toLowerCase() === 'paper'){
-                        return 'Computer wins';
+                        return 'Computer';
                     }else if(computerSelection.toLowerCase() === 'scissor'){
-                        return 'You win';
+                        return 'You';
                     }
 
                 case 'paper':
                     if(computerSelection.toLowerCase() === 'scissor'){
-                        return 'Computer wins';
+                        return 'Computer';
                     }else if(computerSelection.toLowerCase() === 'rock'){
-                        return 'You win';
+                        return 'You';
                     }
 
                 case 'scissor':
                     if(computerSelection.toLowerCase() === 'rock'){
-                        return 'Computer wins';
+                        return 'Computer';
                     }else if(computerSelection.toLowerCase() === 'paper'){
-                        return 'You win';
+                        return 'You';
                     }
                     default:
                         return 'Something went wrong';
@@ -101,3 +100,52 @@
     //LOOP END
     //RETURN 
     //FUNCTION END
+
+
+    const game = () => {
+
+        let playerSelection = '';
+        let computerSelection = '';
+
+        let computerScore = 0;
+        let playerScore = 0;
+        let roundResult = '';
+
+        for(let i = 0; i < 5; i++){
+
+            playerSelection = prompt('Choose rock paper or scissor. Write your choice in the field');
+            computerSelection = computerPlay();
+
+
+            roundResult = playRound(playerSelection, computerSelection);
+            if(roundResult === 'You'){
+                playerScore++;
+            }else if(roundResult === 'Computer'){
+                computerScore++;
+            }else if(roundResult === 'Draw'){
+                console.log('It\'s a draw. Nobody scores');
+                continue;
+            }else{
+                console.log('Something went wrong. Check the code');
+                break;
+            }
+            console.log(roundResult + ' scored');
+
+
+
+        }
+
+
+        console.log(`Your score is: ${playerScore}. The computer\'s score is: ${computerScore}`)
+
+        if(playerScore === computerScore){
+            console.log('It is a draw in total')
+
+        }else if(playerScore < computerScore){
+            console.log('You loose the game.')
+        }else if(playerScore > computerScore){
+            console.log('You win the game!')
+        }
+
+
+    }
