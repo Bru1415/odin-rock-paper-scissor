@@ -1,15 +1,3 @@
-// computer makes a random decision between rock paper scissor
-//function computerPlay
-//BEGIN
-//make variable computersDecison that holds the decision (rock paper scissor)
-//make a random value between 1-3 and give computersDecision 
-//IF random === 1  then rock
-//ELSE IF random === 2 then paper
-//ELSE IF random === 3 then scissor
-
-//RETURN computersDecison
-
-
 const computerPlay = () => {
 
     let computerSelection = null;
@@ -27,129 +15,215 @@ const computerPlay = () => {
 
     return computerSelection;
 
-
 }
 
 
 
-
-// the gamer is asked for his decision rock paper scissor
-
-
-// the two values (random number, gamer's decision) are compared against rules => one round
-//FUNCTION (computerSelection, playerSelection )
-//IF computerSelection equals playerSelection then RETURN Draw
-//ELSE
-//CASES for rock paper scissor
-//RETURN winner of round
-
 const playRound = (playerSelection, computerSelection) => {
 
     if (playerSelection.toLowerCase() === computerSelection.toLowerCase()) {
-        return 'Draw'
+        roundWinner = 'Draw'
     } else {
 
         switch (playerSelection.toLowerCase()) {
             case 'rock':
                 if (computerSelection.toLowerCase() === 'paper') {
-                    return 'Computer';
+                    roundWinner = 'Computer';
                 } else if (computerSelection.toLowerCase() === 'scissor') {
-                    return 'You';
+                    roundWinner = 'You';
+                }
+                break;
+
+            case 'paper':
+                if (computerSelection.toLowerCase() === 'scissor') {
+                    roundWinner = 'Computer';
+                } else if (computerSelection.toLowerCase() === 'rock') {
+                    roundWinner = 'You';
+                }
+                break;
+            case 'scissor':
+                if (computerSelection.toLowerCase() === 'rock') {
+                    roundWinner = 'Computer';
+                } else if (computerSelection.toLowerCase() === 'paper') {
+                    roundWinner = 'You';
                 }
 
-                case 'paper':
-                    if (computerSelection.toLowerCase() === 'scissor') {
-                        return 'Computer';
-                    } else if (computerSelection.toLowerCase() === 'rock') {
-                        return 'You';
-                    }
-
-                    case 'scissor':
-                        if (computerSelection.toLowerCase() === 'rock') {
-                            return 'Computer';
-                        } else if (computerSelection.toLowerCase() === 'paper') {
-                            return 'You';
-                        }
-                        default:
-                            return 'Something went wrong';
+                break;
+            default:
+                roundWinner = 'Something went wrong';
 
 
         }
 
     }
 
-
+    return roundWinner;
 
 }
 
 
 
 const announceWinner = (playerScore, computerScore) => {
-    
-    console.log(`Your score is: ${playerScore}. The computer\'s score is: ${computerScore}`)
+
 
     if (playerScore === computerScore) {
-        console.log('It is a draw in total')
+        gE_infoTextField.innerText = 'It is a draw in total';
 
     } else if (playerScore < computerScore) {
-        console.log('You loose the game.')
-    } else if (playerScore > computerScore) {
-        console.log('You win the game!')
-    }
+        gE_infoTextField.innerText = 'You loose the game.';
 
+    } else if (playerScore > computerScore) {
+        gE_infoTextField.innerText = 'You win the game!';
+    }
 
 }
 
-// the comparison is repeated 5 times (rounds) at the end the total wins decide who won the game 
-//FUNCTION game()
-//ask for players selection and put it into VARIABLE
-//call computerPlay and store result in VARIABLE
-//make VARIABLES that hold player and computer score 
-//LOOP 5 times 
-//play round
-//actualize scores
-//LOOP END
-//RETURN 
-//FUNCTION END
 
 
+const actualizeScore = (winner) => {
+
+    if (winner === 'You') {
+        playerScore++;
+        gE_playerScoreField.innerText = `${playerScore}`;
+        gE_infoTextField.innerText = `${roundWinner} scored`
+
+    } else if (winner === 'Computer') {
+        computerScore++;
+        gE_computerScoreField.innerText = `${computerScore}`;
+        gE_infoTextField.innerText = `${roundWinner} scored`
+
+    } else if (winner === 'Draw') {
+        computerScore++;
+        playerScore++;
+        gE_playerScoreField.innerText = `${playerScore}`;
+        gE_computerScoreField.innerText = `${computerScore}`;
+        gE_infoTextField.innerText = `Point for both`
+
+    } else {
+        console.log('something went wrong');
+    }
+
+}
+
+
+const playRoundHandler = (event) => {
+
+    const playerSelection = event.currentTarget.innerText;
+    const computerSelection = computerPlay();
+    let roundWinner = playRound(playerSelection, computerSelection);
+
+    actualizeScore(roundWinner);
+
+
+    if (playerScore === 5 || computerScore === 5) {
+
+        announceWinner(playerScore, computerScore);
+
+        selectRock.disabled = true;
+        selectPaper.disabled = true;
+        selectScissor.disabled = true;
+
+        restartGameButton.disabled = false;
+
+        computerScore = 0;
+        playerScore = 0;
+
+
+    }
+
+}
+
+const endGameHandler = (e) => {
+
+    selectRock.removeEventListener('click', playRoundHandler);
+    selectPaper.removeEventListener('click', playRoundHandler);
+    selectScissor.removeEventListener('click', playRoundHandler);
+    playGameButton.removeEventListener('click', game);
+    this.currentTarget.removeEventListener('click', endGameHandler);
+}
+
+const restartGameHandler = (e) => {
+
+    if (selectPaper.disabled || selectRock.disabled || selectScissor.disabled) {
+
+        selectPaper.disabled = false;
+        selectRock.disabled = false;
+        selectScissor.disabled = false;
+
+    }
+
+    gE_computerScoreField.innerText = `${computerScore}`;
+    gE_playerScoreField.innerText = `${playerScore}`;
+}
 
 
 const game = () => {
 
-    let playerSelection = '';
-    let computerSelection = '';
+    if (endGameButton.disabled) {
 
-    let computerScore = 0;
-    let playerScore = 0;
-    let roundResult = '';
-
-    for (let i = 0; i < 5; i++) {
-
-        playerSelection = prompt('Choose rock paper or scissor. Write your choice in the field');
-        computerSelection = computerPlay();
-
-
-        roundResult = playRound(playerSelection, computerSelection);
-        if (roundResult === 'You') {
-            playerScore++;
-        } else if (roundResult === 'Computer') {
-            computerScore++;
-        } else if (roundResult === 'Draw') {
-            console.log('It\'s a draw. Nobody scores');
-            continue;
-        } else {
-            console.log('Something went wrong. Check the code');
-            break;
-        }
-        console.log(roundResult + ' scored');
-
-
-
+        endGameButton.disabled = false;
     }
 
-announceWinner(playerScore, computerScore);
-    
+    gameArea.append(selectRock, selectPaper, selectScissor);
+    document.body.append(gE_resultArea);
 
-
+    selectRock.addEventListener('click', playRoundHandler);
+    selectPaper.addEventListener('click', playRoundHandler);
+    selectScissor.addEventListener('click', playRoundHandler);
 }
+
+
+
+let computerScore = 0;
+let playerScore = 0;
+let roundResult = '';
+
+
+
+const gameArea = document.createElement('div');
+const mainButtons = document.createElement('div');
+
+document.body.append(mainButtons, gameArea);
+
+const playGameButton = document.createElement('button');
+const restartGameButton = document.createElement('button');
+const endGameButton = document.createElement('button');
+
+const gE_resultArea = document.createElement('div');
+const gE_playerScoreField = document.createElement('div');
+const gE_computerScoreField = document.createElement('div');
+const gE_infoTextField = document.createElement('div');
+
+playGameButton.innerText = 'Start the Game';
+playGameButton.style.cssText = 'margin-right: 2rem';
+
+restartGameButton.innerText = 'Restart Game';
+restartGameButton.disabled = true;
+
+endGameButton.innerText = 'End the Game';
+endGameButton.disabled = true;
+
+mainButtons.style.cssText = 'margin-bottom: 6rem'
+mainButtons.append(playGameButton, restartGameButton, endGameButton);
+
+gE_resultArea.style.cssText = 'display: flex; justify-content: space-evenly';
+gE_computerScoreField.style.cssText = 'font-size: 8rem';
+gE_playerScoreField.style.cssText = 'font-size: 8rem';
+gE_infoTextField.style.cssText = 'display: block; font-size: 4rem';
+
+gE_playerScoreField.innerText = `${playerScore}`;
+gE_computerScoreField.innerText = `${computerScore}`;
+gE_infoTextField.innerText = `Let's start the game`;
+
+gE_resultArea.append(gE_playerScoreField, gE_computerScoreField, gE_infoTextField);
+
+playGameButton.addEventListener('click', game);
+restartGameButton.addEventListener('click', restartGameHandler);
+endGameButton.addEventListener('click', endGameHandler);
+
+const selectRock = document.createElement('button');
+const selectPaper = document.createElement('button');
+const selectScissor = document.createElement('button');
+selectRock.innerText = 'Rock';
+selectPaper.innerText = 'Paper';
+selectScissor.innerText = 'Scissor';
